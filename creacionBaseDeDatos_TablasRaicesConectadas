@@ -1,0 +1,90 @@
+CREATE DATABASE RaicesConectadas; 
+GO
+USE RaicesConectadas; 
+GO
+
+/*Creación de tablas*/
+CREATE TABLE [categorias] (
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [descripcion] varchar(255) DEFAULT NULL,
+  [tipo_categoria] varchar(255) DEFAULT NULL,
+  PRIMARY KEY ([id])
+);
+
+CREATE TABLE [clientes] (
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [correo] varchar(255) DEFAULT NULL,
+  [nombre] varchar(255) DEFAULT NULL,
+  [password] varchar(255) NOT NULL,
+  [telefono] varchar(255) DEFAULT NULL,
+  PRIMARY KEY ([id])
+);
+
+CREATE TABLE [paquetes_turisticos] (
+  [precio] float NOT NULL,
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [descripcion] varchar(400) DEFAULT NULL,
+  [nombre] varchar(255) DEFAULT NULL,
+  PRIMARY KEY ([id])
+);
+
+CREATE TABLE [proveedores] (
+  [estado] bit DEFAULT NULL,
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [correo] varchar(255) DEFAULT NULL,
+  [nombre] varchar(255) DEFAULT NULL,
+  [telefenono] varchar(255) DEFAULT NULL,
+  [tipo_servicio] varchar(255) DEFAULT NULL,
+  PRIMARY KEY ([id])
+);
+
+CREATE TABLE [destinos] (
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [id_categorias] bigint DEFAULT NULL,
+  [descripcion] varchar(255) DEFAULT NULL,
+  [nombre] varchar(255) DEFAULT NULL,
+  [tipo] varchar(255) DEFAULT NULL,
+  PRIMARY KEY ([id]),
+  CONSTRAINT [FK_destinos_categorias] FOREIGN KEY ([id_categorias]) REFERENCES [categorias] ([id])
+);
+
+CREATE TABLE [destinos_proveedor] (
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [id_destino] bigint DEFAULT NULL,
+  [id_proveedor] bigint DEFAULT NULL,
+  PRIMARY KEY ([id]),
+  CONSTRAINT [FK_dp_destinos] FOREIGN KEY ([id_destino]) REFERENCES [destinos] ([id]),
+  CONSTRAINT [FK_dp_proveedores] FOREIGN KEY ([id_proveedor]) REFERENCES [proveedores] ([id])
+);
+
+CREATE TABLE [eventos_locales] (
+  [fecha_fin] date DEFAULT NULL,
+  [fecha_inicio] date DEFAULT NULL,
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [id_destino] bigint DEFAULT NULL,
+  [descripcion] varchar(255) DEFAULT NULL,
+  [nombre] varchar(255) DEFAULT NULL,
+  [tipo_evento] varchar(255) DEFAULT NULL,
+  PRIMARY KEY ([id]),
+  CONSTRAINT [FK_eventos_destinos] FOREIGN KEY ([id_destino]) REFERENCES [destinos] ([id])
+);
+
+CREATE TABLE [paquete_destinos] (
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [id_destino] bigint DEFAULT NULL,
+  [id_paquete] bigint DEFAULT NULL,
+  PRIMARY KEY ([id]),
+  CONSTRAINT [FK_pd_destinos] FOREIGN KEY ([id_destino]) REFERENCES [destinos] ([id]),
+  CONSTRAINT [FK_pd_paquetes] FOREIGN KEY ([id_paquete]) REFERENCES [paquetes_turisticos] ([id])
+);
+
+CREATE TABLE [reservas] (
+  [fecha_reserva] date DEFAULT NULL,
+  [id] bigint IDENTITY(1,1) NOT NULL,
+  [id_cliente] bigint DEFAULT NULL,
+  [id_paquete_turistico] bigint DEFAULT NULL,
+  [cantidad_Personas] varchar(255) DEFAULT NULL,
+  PRIMARY KEY ([id]),
+  CONSTRAINT [FK_reservas_clientes] FOREIGN KEY ([id_cliente]) REFERENCES [clientes] ([id]),
+  CONSTRAINT [FK_reservas_paquetes] FOREIGN KEY ([id_paquete_turistico]) REFERENCES [paquetes_turisticos] ([id])
+);
